@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_task/services/database.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -7,23 +8,11 @@ class AuthService {
     return _auth.authStateChanges();
   }
 
-  Future signInAnon() async {
-
-    try {
-      final result = await _auth.signInAnonymously();
-      final user = result.user;
-      return user;
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-
-  }
-
   Future signUpEmail(String email, String password) async{
     try {
       final result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       final user = result.user;
+      await DBSecvice(uid : user!.uid).userData("Title", "", "Description");
       return user;
     } catch (e) {
       print(e.toString());
